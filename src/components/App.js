@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-
-// import { uuid } from "uuidv4";
 import ContactForm from "./ContactForm";
+import ContactList from "./ContactList";
 import "./App.css";
 
 class App extends Component {
@@ -14,12 +13,48 @@ class App extends Component {
     ],
     filter: "",
   };
+
+  handleAddContact = (newContact) => {
+    this.setState((prevState) => {
+      return {
+        contacts: [...prevState.contacts, newContact],
+      };
+    });
+  };
+
+  handleCheckUniqueContact = (name) => {
+    const { contacts } = this.state;
+    const isExistContact = !!contacts.find((contact) => contact.name === name);
+    isExistContact && alert(`${isExistContact.name} is already in contacts!`);
+    return !isExistContact;
+  };
+
+  handleRemoveContact = (id) =>
+    this.setState(({ contacts }) => ({
+      contacts: contacts.filter((contact) => contact.id !== id),
+    }));
+
   render() {
     const { contacts } = this.state;
     return (
       <>
-        <h1>Phonebook</h1>
-        <ContactForm contacts={contacts} />
+        <div className="Container">
+          <section title="Phonebook" className="Section">
+            <h1>Phonebook</h1>
+            <ContactForm
+              contacts={contacts}
+              onAdd={this.handleAddContact}
+              onCheckUnique={this.handleCheckUniqueContact}
+            />
+          </section>
+          <section title="Contacts" className="Section">
+            <h2>Contacts</h2>
+            <ContactList
+              contacts={contacts}
+              onRemove={this.handleRemoveContact}
+            />
+          </section>
+        </div>
       </>
     );
   }
