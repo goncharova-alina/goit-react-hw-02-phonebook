@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ContactForm from "./ContactForm";
 import ContactList from "./ContactList";
+import Filter from "./Filter";
 import "./App.css";
 
 class App extends Component {
@@ -34,8 +35,18 @@ class App extends Component {
       contacts: contacts.filter((contact) => contact.id !== id),
     }));
 
+  handleChangeFilter = (filter) => this.setState({ filter });
+
+  getVisibleContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
   render() {
-    const { contacts } = this.state;
+    const { contacts, filter } = this.state;
+    const visibleContacts = this.getVisibleContacts();
     return (
       <>
         <div className="Container">
@@ -49,8 +60,9 @@ class App extends Component {
           </section>
           <section title="Contacts" className="Section">
             <h2>Contacts</h2>
+            <Filter filter={filter} onChange={this.handleChangeFilter} />
             <ContactList
-              contacts={contacts}
+              contacts={visibleContacts}
               onRemove={this.handleRemoveContact}
             />
           </section>
